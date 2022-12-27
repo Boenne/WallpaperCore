@@ -23,13 +23,14 @@
     <PackageReference Include="MahApps.Metro" Version="2.4.9" />
     <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Extensions\" />
     <Folder Include="Converters\" />
-    <Folder Include="Services\" />
+    <Folder Include="Models\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
 

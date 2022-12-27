@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -10,6 +8,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using WallpaperCore.Extensions;
 using WallpaperCore.Services;
+using WallpaperCore.Wrappers;
+using WallpaperCore.Wrappers.Messenger;
 
 namespace WallpaperCore.ViewModels;
 
@@ -18,57 +18,51 @@ public interface IMainViewModel
     public IRelayCommand StartupCommand { get; }
     public IRelayCommand ClosedCommand { get; }
     public IRelayCommand SettingsCommand { get; }
-    public IRelayCommand BookmarkCommand { get; }
     public IRelayCommand StartCommand { get; }
     public IRelayCommand PauseCommand { get; }
     public IRelayCommand RestartCommand { get; }
-    public IRelayCommand BookmarkSelectedCommand { get; }
     public bool IncludeSubfolders { get; set; }
     public bool IsPaused { get; set; }
     public bool IsRunning { get; set; }
     public bool ShowSettings { get; set; }
     public string RunningDirectoryPath { get; set; }
-    public string SelectedBookmark { get; set; }
-    public ObservableCollection<string> Bookmarks { get; set; }
     public BitmapImage PreviewImage { get; set; }
 }
 
-public class MainViewModel : ObservableObject, IMainViewModel
+public class MainViewModel : ObservableRecipient, IMainViewModel
 {
     private const string TempFolderName = "wallpaper_temps";
     private readonly IDispatcherWrapper _dispatcherWrapper;
     private readonly IImageService _imageService;
+    private readonly IMessengerWrapper _messenger;
 
-    private readonly IWallpaperManagerWrapper _wallpaperManagerWrapper;
-    private ObservableCollection<string> _bookmarks = new();
+    private readonly IWallpaperService _wallpaperService;
     private CancellationTokenSource? _cancellationTokenSource;
     private Task? _imagePreviewTask, _backgroundTask;
     private List<FileInfo> _images;
     private bool _includeSubfolders;
+    private bool _isPaused;
+    private bool _isRunning;
     private DirectoryInfo? _mainDirectory, _tempDirectoryInfo;
     private BitmapImage _previewImage;
     private string _runningDirectoryPath;
-    private string _selectedBookmark;
-    private bool _isPaused;
-    private bool _isRunning;
     private bool _showSettings;
 
-    public MainViewModel(IWallpaperManagerWrapper wallpaperManagerWrapper, IDispatcherWrapper dispatcherWrapper,
-        IImageService imageService)
+    public MainViewModel(IWallpaperService wallpaperService, IDispatcherWrapper dispatcherWrapper,
+        IImageService imageService, IMessengerWrapper messenger)
     {
-        _wallpaperManagerWrapper = wallpaperManagerWrapper;
+        _wallpaperService = wallpaperService;
         _dispatcherWrapper = dispatcherWrapper;
         _imageService = imageService;
+        _messenger = messenger;
     }
 
     public IRelayCommand ClosedCommand => new RelayCommand(Close);
     public IRelayCommand StartupCommand => new RelayCommand(StartUp);
     public IRelayCommand SettingsCommand => new RelayCommand(Settings);
-    public IRelayCommand BookmarkCommand => new RelayCommand(Bookmark);
     public IRelayCommand StartCommand => new RelayCommand(Start);
     public IRelayCommand PauseCommand => new RelayCommand(Pause);
     public IRelayCommand RestartCommand => new RelayCommand(Start);
-    public IRelayCommand BookmarkSelectedCommand => new RelayCommand(SelectBookmark);
 
     public bool IncludeSubfolders
     {
@@ -100,28 +94,10 @@ public class MainViewModel : ObservableObject, IMainViewModel
         set => SetProperty(ref _runningDirectoryPath, value);
     }
 
-    public string SelectedBookmark
-    {
-        get => _selectedBookmark;
-        set => SetProperty(ref _selectedBookmark, value);
-    }
-
-    public ObservableCollection<string> Bookmarks
-    {
-        get => _bookmarks;
-        set => SetProperty(ref _bookmarks, value);
-    }
-
     public BitmapImage PreviewImage
     {
         get => _previewImage;
         set => SetProperty(ref _previewImage, value);
-    }
-
-    public void SelectBookmark()
-    {
-        RunningDirectoryPath = SelectedBookmark;
-        Start();
     }
 
     public void Pause()
@@ -131,7 +107,11 @@ public class MainViewModel : ObservableObject, IMainViewModel
 
     public void StartUp()
     {
-        SetBookmarks();
+        _messenger.Register<MainViewModel, BookmarkSelectedMessage>(this, (vm, message) =>
+        {
+            RunningDirectoryPath = message.Path;
+            Start();
+        });
     }
 
     public void Close()
@@ -143,26 +123,6 @@ public class MainViewModel : ObservableObject, IMainViewModel
     public void Settings()
     {
         ShowSettings = true;
-    }
-
-    public void Bookmark()
-    {
-        var dir = new DirectoryInfo(RunningDirectoryPath);
-        if (!dir.Exists) return;
-        var bookmarks = Properties.Settings.Default.Bookmarks;
-        if (bookmarks.Contains(dir.FullName)) return;
-        bookmarks += $",{dir.FullName}";
-        Properties.Settings.Default.Bookmarks = bookmarks;
-        Properties.Settings.Default.Save();
-        SetBookmarks();
-    }
-
-    public void SetBookmarks()
-    {
-        var bookmarkString = Properties.Settings.Default.Bookmarks;
-        if (string.IsNullOrWhiteSpace(bookmarkString)) return;
-        var bookmarks = bookmarkString.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-        foreach (var bookmark in bookmarks) _bookmarks.Add(bookmark);
     }
 
     public void Start()
@@ -193,7 +153,7 @@ public class MainViewModel : ObservableObject, IMainViewModel
                 if (!IsPaused)
                 {
                     if (i >= files.Count) i = 0;
-                    _wallpaperManagerWrapper.Set(filePath);
+                    _wallpaperService.Set(filePath);
 
                     filePath = _imageService.GetImagePath(files[i], _tempDirectoryInfo!.FullName);
                     SetPreviewImage(filePath);

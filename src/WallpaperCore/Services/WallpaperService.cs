@@ -1,11 +1,11 @@
 ﻿namespace WallpaperCore.Services;
 
-public interface IWallpaperManagerWrapper
+public interface IWallpaperService
 {
     void Set(string uri);
 }
 
-public class WallpaperManagerWrapper : IWallpaperManagerWrapper
+public class WallpaperService : IWallpaperService
 {
     public void Set(string uri)
     {

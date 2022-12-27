@@ -14,6 +14,9 @@
                  Icon="Resources/renekton.ico"
                  ShowIconOnTitleBar="False"
                  DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}">
+    <Window.Resources>
+        <BitmapImage x:Key="DefaultImage" UriSource="/Resources/placeholder_background.jpg" />
+    </Window.Resources>
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
             <Button Content="">
@@ -60,76 +63,63 @@
             <ColumnDefinition Width="4*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="45" />
-                <RowDefinition Height="45" />
-                <RowDefinition Height="45" />
-                <RowDefinition Height="90" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <TextBox Grid.Row="0" Name="TextBoxDirectory" Padding="7" Margin="5" Text="{Binding RunningDirectoryPath}"
+        <TabControl Grid.Column="1" Margin="0,50,0,50">
+            <TabItem Header="Main">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="45" />
+                        <RowDefinition Height="45" />
+                        <RowDefinition Height="45" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBox Grid.Row="0" Name="TextBoxDirectory" Padding="7" Margin="5" Text="{Binding RunningDirectoryPath}"
                      Style="{StaticResource MahApps.Styles.TextBox}" mah:TextBoxHelper.Watermark="Image folder" />
-            <Button Grid.Row="1" Margin="5" Content="_Start"
-                    Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}, ConverterParameter=switch}">
-                <b:Interaction.Triggers>
-                    <b:EventTrigger EventName="Click">
-                        <b:InvokeCommandAction Command="{Binding StartCommand}" />
-                    </b:EventTrigger>
-                </b:Interaction.Triggers>
-            </Button>
-            <Grid Grid.Row="1" Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Margin="5">
-                    <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-                            <Setter Property="Content" Value="_Pause" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsPaused}" Value="True">
-                                    <Setter Property="Content" Value="Resume" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                    <b:Interaction.Triggers>
-                        <b:EventTrigger EventName="Click">
-                            <b:InvokeCommandAction Command="{Binding PauseCommand}" />
-                        </b:EventTrigger>
-                    </b:Interaction.Triggers>
-                </Button>
-                <Button Grid.Column="1" Margin="5" Content="_Restart">
-                    <b:Interaction.Triggers>
-                        <b:EventTrigger EventName="Click">
-                            <b:InvokeCommandAction Command="{Binding RestartCommand}" />
-                        </b:EventTrigger>
-                    </b:Interaction.Triggers>
-                </Button>
-            </Grid>
-            <CheckBox Grid.Row="2" Margin="5" Content="Include subfolders" IsChecked="{Binding IncludeSubfolders}"
-                      Style="{DynamicResource MahApps.Styles.CheckBox.Win10}" HorizontalAlignment="Center" />
-            <Button Style="{DynamicResource MahApps.Styles.Button.Circle}" Margin="5" Visibility="Collapsed">
-                <iconPacks:ForkAwesome Width="22"
-                                       Height="22"
-                                       Kind="BookmarkOutline" />
-                <b:Interaction.Triggers>
-                    <b:EventTrigger EventName="Click">
-                        <b:InvokeCommandAction Command="{Binding BookmarkCommand}" />
-                    </b:EventTrigger>
-                </b:Interaction.Triggers>
-            </Button>
-            <ListBox Grid.Row="3" Margin="5" Name="Bookmarks" ItemsSource="{Binding Bookmarks}"
-                     SelectedItem="{Binding SelectedBookmark}">
-                <b:Interaction.Triggers>
-                    <b:EventTrigger EventName="SelectionChanged">
-                        <b:InvokeCommandAction Command="{Binding BookmarkSelectedCommand}"
-                                               PassEventArgsToCommand="False" />
-                    </b:EventTrigger>
-                </b:Interaction.Triggers>
-            </ListBox>
-            <Image Grid.Row="4" Margin="5" Name="ImagePreview" Source="{Binding PreviewImage}" />
-        </Grid>
+                    <Button Grid.Row="2" Margin="5" Content="_Start"
+                    Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}, ConverterParameter=switch, FallbackValue=Visible}">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:InvokeCommandAction Command="{Binding StartCommand}" />
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                    </Button>
+                    <CheckBox Grid.Row="1" Margin="6" Content="Include subfolders" IsChecked="{Binding IncludeSubfolders}"
+                              Style="{DynamicResource MahApps.Styles.CheckBox.Win10}" />
+                    <Grid Grid.Row="2" Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Margin="5">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                    <Setter Property="Content" Value="_Pause" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsPaused}" Value="True">
+                                            <Setter Property="Content" Value="Resume" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="Click">
+                                    <b:InvokeCommandAction Command="{Binding PauseCommand}" />
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </Button>
+                        <Button Grid.Column="1" Margin="5" Content="_Restart">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="Click">
+                                    <b:InvokeCommandAction Command="{Binding RestartCommand}" />
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </Button>
+                    </Grid>
+                    <Image Grid.Row="3" Margin="5" Name="ImagePreview" Source="{Binding PreviewImage, FallbackValue={StaticResource DefaultImage}}" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Bookmarks">
+                <userControls:BookmarksUserControl></userControls:BookmarksUserControl>
+            </TabItem>
+        </TabControl>
     </Grid>
 </mah:MetroWindow>

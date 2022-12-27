@@ -2,9 +2,9 @@
 
 namespace WallpaperCore.UserControls;
 
-public partial class SettingsUserControl : UserControl
+public partial class BookmarksUserControl : UserControl
 {
-    public SettingsUserControl()
+    public BookmarksUserControl()
     {
         InitializeComponent();
     }
