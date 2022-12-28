@@ -71,20 +71,24 @@
                         <RowDefinition Height="45" />
                         <RowDefinition Height="45" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="25" />
                     </Grid.RowDefinitions>
-                    <TextBox Grid.Row="0" Name="TextBoxDirectory" Padding="7" Margin="5" Text="{Binding RunningDirectoryPath}"
-                     Style="{StaticResource MahApps.Styles.TextBox}" mah:TextBoxHelper.Watermark="Image folder" />
+                    <TextBox Grid.Row="0" Name="TextBoxDirectory" Padding="7" Margin="5"
+                             Text="{Binding RunningDirectoryPath}"
+                             Style="{StaticResource MahApps.Styles.TextBox}" mah:TextBoxHelper.Watermark="Image folder" />
                     <Button Grid.Row="2" Margin="5" Content="_Start"
-                    Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}, ConverterParameter=switch, FallbackValue=Visible}">
+                            Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}, ConverterParameter=switch, FallbackValue=Visible}">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="Click">
                                 <b:InvokeCommandAction Command="{Binding StartCommand}" />
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
                     </Button>
-                    <CheckBox Grid.Row="1" Margin="6" Content="Include subfolders" IsChecked="{Binding IncludeSubfolders}"
+                    <CheckBox Grid.Row="1" Margin="6" Content="Include subfolders"
+                              IsChecked="{Binding IncludeSubfolders}"
                               Style="{DynamicResource MahApps.Styles.CheckBox.Win10}" />
-                    <Grid Grid.Row="2" Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
+                    <Grid Grid.Row="2"
+                          Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
@@ -114,11 +118,41 @@
                             </b:Interaction.Triggers>
                         </Button>
                     </Grid>
-                    <Image Grid.Row="3" Margin="5" Name="ImagePreview" Source="{Binding PreviewImage, FallbackValue={StaticResource DefaultImage}}" />
+                    <StackPanel Grid.Row="3" Margin="5, 20, 5 ,0"
+                                Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}}">
+                        <Image Name="ImagePreview"
+                               Source="{Binding PreviewImage, FallbackValue={StaticResource DefaultImage}}" />
+                        <ProgressBar Value="{Binding Progress}" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center"
+                                Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}}">
+                        <Button Style="{DynamicResource MahApps.Styles.Button.Circle}" ToolTip="Previous">
+                            <iconPacks:ForkAwesome Width="25"
+                                                   Height="15"
+                                                   Kind="AngleDoubleLeft" />
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="Click">
+                                    <b:InvokeCommandAction
+                                        Command="{Binding PreviousCommand}" />
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </Button>
+                        <Button Style="{DynamicResource MahApps.Styles.Button.Circle}" ToolTip="Next">
+                            <iconPacks:ForkAwesome Width="25"
+                                                   Height="15"
+                                                   Kind="AngleDoubleRight" />
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="Click">
+                                    <b:InvokeCommandAction
+                                        Command="{Binding NextCommand}" />
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </Button>
+                    </StackPanel>
                 </Grid>
             </TabItem>
             <TabItem Header="Bookmarks">
-                <userControls:BookmarksUserControl></userControls:BookmarksUserControl>
+                <userControls:BookmarksUserControl />
             </TabItem>
         </TabControl>
     </Grid>

@@ -15,6 +15,7 @@ public partial class App : Application
         IoCContainer.Register<IMessageBoxWrapper, MessageBoxWrapper>();
         IoCContainer.Register<IWallpaperService, WallpaperService>();
         IoCContainer.Register<IImageService, ImageService>();
+        IoCContainer.Register<IBackgroundWorker, BackgroundWorker>();
 
         IoCContainer.Register<IMainViewModel, MainViewModel>();
         IoCContainer.Register<ISettingsViewModel, SettingsViewModel>();
