@@ -8,7 +8,7 @@
                  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  xmlns:userControls="clr-namespace:WallpaperCore.UserControls"
                  mc:Ignorable="d"
-                 Title="Wallpaper" Height="540" Width="500"
+                 Title="Wallpaper" Height="570" Width="500"
                  ResizeMode="CanResizeWithGrip"
                  WindowStartupLocation="CenterScreen"
                  Icon="Resources/renekton.ico"
