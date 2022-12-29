@@ -123,9 +123,9 @@ public class BackgroundWorker : IBackgroundWorker, IDisposable
         {
             if (_mainCts!.IsCancellationRequested || _timerCts!.IsCancellationRequested)
                 break;
-            secondsCount += 0.5;
+            secondsCount += 0.1;
             incrementProgressAction(100 / (double)seconds * secondsCount);
-            await Task.Delay(500);
+            await Task.Delay(100);
         }
 
         //If only timer is cancelled
