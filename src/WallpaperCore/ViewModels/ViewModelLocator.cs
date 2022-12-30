@@ -1,6 +1,4 @@
-﻿using WallpaperCore.ViewModels;
-
-namespace WallpaperCore;
+﻿namespace WallpaperCore.ViewModels;
 
 public class ViewModelLocator
 {
