@@ -1,4 +1,4 @@
-﻿namespace WallpaperCore.Windows;
+﻿namespace WallpaperCore.Windows.Interfaces;
 
 public interface IClosable
 {

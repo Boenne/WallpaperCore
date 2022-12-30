@@ -1,4 +1,6 @@
-﻿namespace WallpaperCore.Windows;
+﻿using WallpaperCore.Windows.Interfaces;
+
+namespace WallpaperCore.Windows;
 
 public partial class ConfirmationWindow : IClosable
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using WallpaperCore.Windows;
+using WallpaperCore.Windows.Interfaces;
 using WallpaperCore.Wrappers.Messenger;
 
 namespace WallpaperCore.ViewModels;
