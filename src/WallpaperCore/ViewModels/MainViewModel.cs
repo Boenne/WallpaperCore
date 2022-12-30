@@ -29,7 +29,7 @@ public interface IMainViewModel
 public class MainViewModel : ObservableRecipient, IMainViewModel
 {
     private readonly IBackgroundWorker _backgroundWorker;
-    private readonly IDispatcherWrapper _dispatcherWrapper;
+    private readonly IDispatcherService _dispatcherService;
     private readonly IImageService _imageService;
     private readonly IMessengerWrapper _messenger;
     private bool _includeSubfolders;
@@ -40,10 +40,10 @@ public class MainViewModel : ObservableRecipient, IMainViewModel
     private string _runningDirectoryPath;
     private bool _showSettings;
 
-    public MainViewModel(IDispatcherWrapper dispatcherWrapper, IMessengerWrapper messenger,
+    public MainViewModel(IDispatcherService dispatcherService, IMessengerWrapper messenger,
         IBackgroundWorker backgroundWorker, IImageService imageService)
     {
-        _dispatcherWrapper = dispatcherWrapper;
+        _dispatcherService = dispatcherService;
         _messenger = messenger;
         _backgroundWorker = backgroundWorker;
         _imageService = imageService;
@@ -145,7 +145,7 @@ public class MainViewModel : ObservableRecipient, IMainViewModel
     {
         try
         {
-            _dispatcherWrapper.BeginInvoke(() => PreviewImage = _imageService.CreatePreviewImage(filePath));
+            _dispatcherService.DoUIWork(() => PreviewImage = _imageService.CreatePreviewImage(filePath));
         }
         catch
         {
@@ -156,6 +156,6 @@ public class MainViewModel : ObservableRecipient, IMainViewModel
 
     public void IncrementProgress(double value)
     {
-        _dispatcherWrapper.BeginInvoke(() => Progress = value);
+        _dispatcherService.DoUIWork(() => Progress = value);
     }
 }

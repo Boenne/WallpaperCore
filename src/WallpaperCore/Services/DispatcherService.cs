@@ -3,16 +3,16 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace WallpaperCore.Wrappers;
+namespace WallpaperCore.Services;
 
-public interface IDispatcherWrapper
+public interface IDispatcherService
 {
-    Task BeginInvoke(Action action);
+    Task DoUIWork(Action action);
 }
 
-public class DispatcherWrapper : IDispatcherWrapper
+public class DispatcherService : IDispatcherService
 {
-    public async Task BeginInvoke(Action action)
+    public async Task DoUIWork(Action action)
     {
         await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, action);
     }
