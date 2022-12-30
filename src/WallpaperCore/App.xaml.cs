@@ -12,7 +12,7 @@ public partial class App : Application
     {
         IoCContainer.Register<IMessengerWrapper, MessengerWrapper>();
         IoCContainer.Register<IDispatcherWrapper, DispatcherWrapper>();
-        IoCContainer.Register<IMessageBoxWrapper, MessageBoxWrapper>();
+        IoCContainer.Register<IConfirmationService, ConfirmationService>();
         IoCContainer.Register<IWallpaperService, WallpaperService>();
         IoCContainer.Register<IImageService, ImageService>();
         IoCContainer.Register<IBackgroundWorker, BackgroundWorker>();
@@ -20,5 +20,6 @@ public partial class App : Application
         IoCContainer.Register<IMainViewModel, MainViewModel>();
         IoCContainer.Register<ISettingsViewModel, SettingsViewModel>();
         IoCContainer.Register<IBookmarksViewModel, BookmarksViewModel>();
+        IoCContainer.Register<IConfirmationViewModel, ConfirmationViewModel>();
     }
 }

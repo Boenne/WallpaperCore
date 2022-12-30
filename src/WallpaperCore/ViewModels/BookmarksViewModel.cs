@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using WallpaperCore.Models;
 using WallpaperCore.Properties;
-using WallpaperCore.Wrappers;
+using WallpaperCore.Services;
 using WallpaperCore.Wrappers.Messenger;
 
 namespace WallpaperCore.ViewModels;
@@ -24,16 +24,16 @@ public interface IBookmarksViewModel
 
 public class BookmarksViewModel : ObservableObject, IBookmarksViewModel
 {
-    private readonly IMessageBoxWrapper _messageBoxWrapper;
+    private readonly IConfirmationService _confirmationService;
     private readonly IMessengerWrapper _messenger;
     private ObservableCollection<Bookmark> _bookmarks = new();
     private string _path;
     private string _title;
 
-    public BookmarksViewModel(IMessageBoxWrapper messageBoxWrapper, IMessengerWrapper messenger)
+    public BookmarksViewModel(IMessengerWrapper messenger, IConfirmationService confirmationService)
     {
-        _messageBoxWrapper = messageBoxWrapper;
         _messenger = messenger;
+        _confirmationService = confirmationService;
     }
 
     public ObservableCollection<Bookmark> Bookmarks
@@ -86,7 +86,7 @@ public class BookmarksViewModel : ObservableObject, IBookmarksViewModel
 
     public void Delete(Bookmark bookmark)
     {
-        _messageBoxWrapper.Prompt("Delete bookmark", $"Are you sure you want to delete '{bookmark.Title}'",
+        _confirmationService.Prompt("Delete bookmark", $"Are you sure you want to delete '{bookmark.Title}'",
             () => { RemoveBookmark(bookmark); });
     }
 
