@@ -26,9 +26,12 @@ public class BackgroundWorker : IBackgroundWorker, IDisposable
     private readonly IImageService _imageService;
     private readonly IWallpaperService _wallpaperService;
     private Task? _backgroundTask;
+    private List<FileInfo> _images;
+    private int _index;
     private bool _isPaused;
     private CancellationTokenSource? _mainCts, _timerCts;
     private DirectoryInfo? _mainDirectory, _tempDirectoryInfo;
+    private string _nextWallpaperPath;
 
     public BackgroundWorker(IImageService imageService, IWallpaperService wallpaperService)
     {
@@ -48,16 +51,14 @@ public class BackgroundWorker : IBackgroundWorker, IDisposable
         _backgroundTask = Task.Run(async () =>
         {
             if (!_mainDirectory!.Exists) return;
-            var images = _mainDirectory.GetImageFiles();
+            _images = _mainDirectory.GetImageFiles();
             if (includeSubfolders)
-                GetFilesInSubFolders(_mainDirectory, images);
+                GetFilesInSubFolders(_mainDirectory, _images);
 
-            if (!images.Any()) return;
+            if (!_images.Any()) return;
 
-            images.Shuffle();
-            var files = images.Select(x => x.FullName).ToList();
-            var i = 1;
-            var filePath = _imageService.GetImagePath(files[0], _tempDirectoryInfo!.FullName);
+            _images.Shuffle();
+            SetNextWallpaperPath();
 
             while (true)
             {
@@ -65,12 +66,11 @@ public class BackgroundWorker : IBackgroundWorker, IDisposable
                     break;
                 if (!_isPaused)
                 {
-                    if (i >= files.Count) i = 0;
-                    _wallpaperService.Set(filePath);
+                    if (_index >= _images.Count) _index = 0;
+                    _wallpaperService.Set(_nextWallpaperPath);
 
-                    filePath = _imageService.GetImagePath(files[i], _tempDirectoryInfo!.FullName);
-                    setPreviewImageAction(filePath);
-                    i++;
+                    SetNextWallpaperPath();
+                    setPreviewImageAction(_nextWallpaperPath);
                 }
 
                 await WaitSeconds(10, incrementProgressAction);
@@ -90,13 +90,25 @@ public class BackgroundWorker : IBackgroundWorker, IDisposable
 
     public void Previous()
     {
-        throw new NotImplementedException();
+        if (_images.Count < 3)
+            _index = _index == 1 ? 0 : 1;
+        else
+            _index -= 3;
+        if (_index < 0) _index = _images.Count + _index;
+        SetNextWallpaperPath();
+        _timerCts?.Cancel();
     }
 
     public void Dispose()
     {
         Cancel();
         DeleteTempFolder();
+    }
+
+    public void SetNextWallpaperPath()
+    {
+        _nextWallpaperPath = _imageService.GetImagePath(_images[_index].FullName, _tempDirectoryInfo!.FullName);
+        _index++;
     }
 
     public void Cancel()
