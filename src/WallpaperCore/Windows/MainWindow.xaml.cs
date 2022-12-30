@@ -1,4 +1,4 @@
-﻿namespace WallpaperCore;
+﻿namespace WallpaperCore.Windows;
 
 public partial class MainWindow
 {
