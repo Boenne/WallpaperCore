@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WallpaperCore.Wrappers.Messenger;
+namespace WallpaperCore.Services.Messenger.Messages;
 
 public class UserPromptedMessage
 {

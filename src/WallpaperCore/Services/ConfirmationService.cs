@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using WallpaperCore.Services.Messenger;
+using WallpaperCore.Services.Messenger.Messages;
 using WallpaperCore.Windows;
-using WallpaperCore.Wrappers.Messenger;
 
 namespace WallpaperCore.Services;
 
@@ -12,9 +13,9 @@ public interface IConfirmationService
 
 public class ConfirmationService : IConfirmationService
 {
-    private readonly IMessengerWrapper _messenger;
+    private readonly IMessengerService _messenger;
 
-    public ConfirmationService(IMessengerWrapper messenger)
+    public ConfirmationService(IMessengerService messenger)
     {
         _messenger = messenger;
     }

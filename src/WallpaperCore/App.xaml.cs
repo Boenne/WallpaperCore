@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using WallpaperCore.Services;
+using WallpaperCore.Services.Messenger;
 using WallpaperCore.ViewModels;
-using WallpaperCore.Wrappers.Messenger;
 
 namespace WallpaperCore;
 
@@ -9,7 +9,7 @@ public partial class App : Application
 {
     public App()
     {
-        IoCContainer.Register<IMessengerWrapper, MessengerWrapper>();
+        IoCContainer.Register<IMessengerService, MessengerService>();
         IoCContainer.Register<IDispatcherService, DispatcherService>();
         IoCContainer.Register<IConfirmationService, ConfirmationService>();
         IoCContainer.Register<IWallpaperService, WallpaperService>();

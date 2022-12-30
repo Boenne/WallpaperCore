@@ -2,8 +2,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using WallpaperCore.Services;
-using WallpaperCore.Wrappers;
-using WallpaperCore.Wrappers.Messenger;
+using WallpaperCore.Services.Messenger;
+using WallpaperCore.Services.Messenger.Messages;
 
 namespace WallpaperCore.ViewModels;
 
@@ -29,9 +29,9 @@ public interface IMainViewModel
 public class MainViewModel : ObservableRecipient, IMainViewModel
 {
     private readonly IBackgroundWorker _backgroundWorker;
-    private readonly IDispatcherService _dispatcherService;
+    private readonly IDispatcherService _dispatcher;
     private readonly IImageService _imageService;
-    private readonly IMessengerWrapper _messenger;
+    private readonly IMessengerService _messenger;
     private bool _includeSubfolders;
     private bool _isPaused;
     private bool _isRunning;
@@ -40,10 +40,10 @@ public class MainViewModel : ObservableRecipient, IMainViewModel
     private string _runningDirectoryPath;
     private bool _showSettings;
 
-    public MainViewModel(IDispatcherService dispatcherService, IMessengerWrapper messenger,
+    public MainViewModel(IDispatcherService dispatcher, IMessengerService messenger,
         IBackgroundWorker backgroundWorker, IImageService imageService)
     {
-        _dispatcherService = dispatcherService;
+        _dispatcher = dispatcher;
         _messenger = messenger;
         _backgroundWorker = backgroundWorker;
         _imageService = imageService;
@@ -145,7 +145,7 @@ public class MainViewModel : ObservableRecipient, IMainViewModel
     {
         try
         {
-            _dispatcherService.DoUIWork(() => PreviewImage = _imageService.CreatePreviewImage(filePath));
+            _dispatcher.DoUIWork(() => PreviewImage = _imageService.CreatePreviewImage(filePath));
         }
         catch
         {
@@ -156,6 +156,6 @@ public class MainViewModel : ObservableRecipient, IMainViewModel
 
     public void IncrementProgress(double value)
     {
-        _dispatcherService.DoUIWork(() => Progress = value);
+        _dispatcher.DoUIWork(() => Progress = value);
     }
 }

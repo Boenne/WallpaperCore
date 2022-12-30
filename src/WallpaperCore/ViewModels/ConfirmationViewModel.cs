@@ -1,8 +1,9 @@
 ﻿using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using WallpaperCore.Services.Messenger;
+using WallpaperCore.Services.Messenger.Messages;
 using WallpaperCore.Windows.Interfaces;
-using WallpaperCore.Wrappers.Messenger;
 
 namespace WallpaperCore.ViewModels;
 
@@ -17,13 +18,13 @@ public interface IConfirmationViewModel
 
 public class ConfirmationViewModel : ObservableRecipient, IConfirmationViewModel
 {
-    private readonly IMessengerWrapper _messenger;
+    private readonly IMessengerService _messenger;
     private Action _confirmationAction;
     private string _text;
     private string _title;
     private IClosable _window;
 
-    public ConfirmationViewModel(IMessengerWrapper messenger)
+    public ConfirmationViewModel(IMessengerService messenger)
     {
         _messenger = messenger;
     }

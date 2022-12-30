@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 
-namespace WallpaperCore.Wrappers.Messenger;
+namespace WallpaperCore.Services.Messenger;
 
-public interface IMessengerWrapper
+public interface IMessengerService
 {
     void Register<TRecipient, TMessage>(TRecipient recipient, MessageHandler<TRecipient, TMessage> action)
         where TRecipient : ObservableRecipient where TMessage : class;
@@ -11,7 +11,7 @@ public interface IMessengerWrapper
     void Send<TMessage>(TMessage message) where TMessage : class;
 }
 
-public class MessengerWrapper : ObservableRecipient, IMessengerWrapper
+public class MessengerService : ObservableRecipient, IMessengerService
 {
     public void Register<TRecipient, TMessage>(TRecipient recipient, MessageHandler<TRecipient, TMessage> action)
         where TRecipient : ObservableRecipient where TMessage : class

@@ -7,7 +7,8 @@ using Newtonsoft.Json;
 using WallpaperCore.Models;
 using WallpaperCore.Properties;
 using WallpaperCore.Services;
-using WallpaperCore.Wrappers.Messenger;
+using WallpaperCore.Services.Messenger;
+using WallpaperCore.Services.Messenger.Messages;
 
 namespace WallpaperCore.ViewModels;
 
@@ -25,12 +26,12 @@ public interface IBookmarksViewModel
 public class BookmarksViewModel : ObservableObject, IBookmarksViewModel
 {
     private readonly IConfirmationService _confirmationService;
-    private readonly IMessengerWrapper _messenger;
+    private readonly IMessengerService _messenger;
     private ObservableCollection<Bookmark> _bookmarks = new();
     private string _path;
     private string _title;
 
-    public BookmarksViewModel(IMessengerWrapper messenger, IConfirmationService confirmationService)
+    public BookmarksViewModel(IMessengerService messenger, IConfirmationService confirmationService)
     {
         _messenger = messenger;
         _confirmationService = confirmationService;
