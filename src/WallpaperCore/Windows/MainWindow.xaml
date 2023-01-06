@@ -8,8 +8,8 @@
                  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  xmlns:userControls="clr-namespace:WallpaperCore.UserControls"
                  mc:Ignorable="d"
-                 Title="Wallpaper" Height="570" Width="500"
-                 ResizeMode="CanResizeWithGrip"
+                 Title="Wallpaper" Height="600" Width="530"
+                 ResizeMode="NoResize"
                  WindowStartupLocation="CenterScreen"
                  Icon="/Resources/renekton.ico"
                  ShowIconOnTitleBar="False"
@@ -70,7 +70,7 @@
                         <RowDefinition Height="45" />
                         <RowDefinition Height="45" />
                         <RowDefinition Height="45" />
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="240" />
                         <RowDefinition Height="25" />
                     </Grid.RowDefinitions>
                     <TextBox Grid.Row="0" Name="TextBoxDirectory" Padding="7" Margin="5"
@@ -121,8 +121,10 @@
                     <StackPanel Grid.Row="3" Margin="5, 20, 5 ,0"
                                 Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}}">
                         <Image Name="ImagePreview"
+                               Height="190"
+                               Stretch="Fill"
                                Source="{Binding PreviewImage, FallbackValue={StaticResource DefaultImage}}" />
-                        <ProgressBar Value="{Binding Progress}" />
+                        <ProgressBar Value="{Binding Progress}"/>
                     </StackPanel>
                     <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center"
                                 Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}}">
