@@ -11,6 +11,8 @@ namespace WallpaperCore.Services;
 
 public interface IBackgroundWorker
 {
+    void Initialize(string tempFolderName, int interval);
+
     void Begin(string runningDirectoryPath, bool includeSubfolders, Action<string> setPreviewImageAction,
         Action<double> incrementProgressAction);
 
@@ -22,16 +24,17 @@ public interface IBackgroundWorker
 
 public class BackgroundWorker : IBackgroundWorker, IDisposable
 {
-    private const string TempFolderName = "wallpaper_temps";
     private readonly IImageService _imageService;
     private readonly IWallpaperService _wallpaperService;
     private Task? _backgroundTask;
     private List<FileInfo> _images;
     private int _index;
+    private int _interval;
     private bool _isPaused;
     private CancellationTokenSource? _mainCts, _timerCts;
     private DirectoryInfo? _mainDirectory, _tempDirectoryInfo;
     private string _nextWallpaperPath;
+    private string _tempFolderName;
 
     public BackgroundWorker(IImageService imageService, IWallpaperService wallpaperService)
     {
@@ -39,9 +42,18 @@ public class BackgroundWorker : IBackgroundWorker, IDisposable
         _wallpaperService = wallpaperService;
     }
 
+    public void Initialize(string tempFolderName, int interval)
+    {
+        _tempFolderName = tempFolderName;
+        _interval = interval;
+    }
+
     public void Begin(string runningDirectoryPath, bool includeSubfolders, Action<string> setPreviewImageAction,
         Action<double> incrementProgressAction)
     {
+        if (!IsInitialized())
+            throw new Exception($"{nameof(BackgroundWorker)} has not been initialized");
+
         Cancel();
         SetDirectory(runningDirectoryPath);
 
@@ -73,7 +85,7 @@ public class BackgroundWorker : IBackgroundWorker, IDisposable
                     setPreviewImageAction(_nextWallpaperPath);
                 }
 
-                await WaitSeconds(10, incrementProgressAction);
+                await WaitSeconds(_interval, incrementProgressAction);
             }
         }, _mainCts.Token);
     }
@@ -135,9 +147,9 @@ public class BackgroundWorker : IBackgroundWorker, IDisposable
         {
             if (_mainCts!.IsCancellationRequested || _timerCts!.IsCancellationRequested)
                 break;
-            secondsCount += 0.1;
+            secondsCount += 0.05;
             incrementProgressAction(100 / (double)seconds * secondsCount);
-            await Task.Delay(100);
+            await Task.Delay(50);
         }
 
         //If only timer is cancelled
@@ -147,7 +159,7 @@ public class BackgroundWorker : IBackgroundWorker, IDisposable
 
     public void GetFilesInSubFolders(DirectoryInfo dir, List<FileInfo> result)
     {
-        var subDirectories = dir.GetDirectories().Where(x => x.Name != TempFolderName).ToList();
+        var subDirectories = dir.GetDirectories().Where(x => x.Name != _tempFolderName).ToList();
         if (!subDirectories.Any()) return;
         foreach (var subDirectory in subDirectories)
         {
@@ -164,7 +176,7 @@ public class BackgroundWorker : IBackgroundWorker, IDisposable
 
         if (FolderHasChanged()) DeleteTempFolder();
 
-        _tempDirectoryInfo = new DirectoryInfo($"{_mainDirectory.FullName}/{TempFolderName}");
+        _tempDirectoryInfo = new DirectoryInfo($"{_mainDirectory.FullName}/{_tempFolderName}");
 
         if (_tempDirectoryInfo.Exists) return;
         _tempDirectoryInfo.Create();
@@ -180,5 +192,10 @@ public class BackgroundWorker : IBackgroundWorker, IDisposable
     {
         if (_tempDirectoryInfo != null && Directory.Exists(_tempDirectoryInfo.FullName))
             Directory.Delete(_tempDirectoryInfo.FullName, true);
+    }
+
+    public bool IsInitialized()
+    {
+        return !string.IsNullOrWhiteSpace(_tempFolderName) && _interval > 0;
     }
 }

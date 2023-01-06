@@ -8,5 +8,11 @@
     <Setting Name="BasePath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="TempFolderName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">wallpaper_temps</Value>
+    </Setting>
+    <Setting Name="Interval" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

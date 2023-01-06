@@ -123,6 +123,8 @@ public class MainViewModel : ObservableRecipient, IMainViewModel
             RunningDirectoryPath = message.Path;
             Start();
         });
+        _messenger.Register<MainViewModel, SettingsSavedMessage>(this, (vm, message) => { ShowSettings = false; });
+        _backgroundWorker.Initialize(Properties.Settings.Default.TempFolderName, Properties.Settings.Default.Interval);
     }
 
     public void Close()
