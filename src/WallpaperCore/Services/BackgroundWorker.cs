@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using WallpaperCore.Extensions;
 using WallpaperCore.Properties;
 
@@ -13,7 +14,7 @@ public interface IBackgroundWorker
 {
     void Initialize(string tempFolderName, int interval);
 
-    void Begin(string runningDirectoryPath, bool includeSubfolders, Action<string> setPreviewImageAction,
+    void Begin(string runningDirectoryPath, bool includeSubfolders, Action<BitmapImage> setPreviewImageAction,
         Action<double> incrementProgressAction);
 
     void TogglePause();
@@ -48,7 +49,7 @@ public class BackgroundWorker : IBackgroundWorker, IDisposable
         _interval = interval;
     }
 
-    public void Begin(string runningDirectoryPath, bool includeSubfolders, Action<string> setPreviewImageAction,
+    public void Begin(string runningDirectoryPath, bool includeSubfolders, Action<BitmapImage> setPreviewImageAction,
         Action<double> incrementProgressAction)
     {
         if (!IsInitialized())
@@ -82,7 +83,8 @@ public class BackgroundWorker : IBackgroundWorker, IDisposable
                     _wallpaperService.Set(_nextWallpaperPath);
 
                     SetNextWallpaperPath();
-                    setPreviewImageAction(_nextWallpaperPath);
+                    var previewImage = _imageService.CreatePreviewImage(_nextWallpaperPath);
+                    setPreviewImageAction(previewImage);
                 }
 
                 await WaitSeconds(_interval, incrementProgressAction);
@@ -130,14 +132,7 @@ public class BackgroundWorker : IBackgroundWorker, IDisposable
         _mainCts.Cancel();
         _timerCts.Cancel();
 
-        try
-        {
-            _backgroundTask?.Wait();
-        }
-        finally
-        {
-            _imageService.ClearBitmapStream();
-        }
+        _backgroundTask?.Wait();
     }
 
     public async Task WaitSeconds(int seconds, Action<double> incrementProgressAction)

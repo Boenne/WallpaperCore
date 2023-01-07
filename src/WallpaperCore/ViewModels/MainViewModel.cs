@@ -30,7 +30,6 @@ public class MainViewModel : ObservableRecipient, IMainViewModel
 {
     private readonly IBackgroundWorker _backgroundWorker;
     private readonly IDispatcherService _dispatcher;
-    private readonly IImageService _imageService;
     private readonly IMessengerService _messenger;
     private bool _includeSubfolders;
     private bool _isPaused;
@@ -41,12 +40,11 @@ public class MainViewModel : ObservableRecipient, IMainViewModel
     private bool _showSettings;
 
     public MainViewModel(IDispatcherService dispatcher, IMessengerService messenger,
-        IBackgroundWorker backgroundWorker, IImageService imageService)
+        IBackgroundWorker backgroundWorker)
     {
         _dispatcher = dispatcher;
         _messenger = messenger;
         _backgroundWorker = backgroundWorker;
-        _imageService = imageService;
     }
 
     public IRelayCommand ClosedCommand => new RelayCommand(Close);
@@ -143,11 +141,11 @@ public class MainViewModel : ObservableRecipient, IMainViewModel
         _backgroundWorker.Begin(RunningDirectoryPath, IncludeSubfolders, SetPreviewImage, IncrementProgress);
     }
 
-    public void SetPreviewImage(string filePath)
+    public void SetPreviewImage(BitmapImage bitmapImage)
     {
         try
         {
-            _dispatcher.DoUIWork(() => PreviewImage = _imageService.CreatePreviewImage(filePath));
+            _dispatcher.DoUIWork(() => PreviewImage = bitmapImage);
         }
         catch
         {

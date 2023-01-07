@@ -11,7 +11,6 @@ public interface IImageService
 {
     BitmapImage CreatePreviewImage(string path);
     string GetImagePath(string filePath, string tempFolder);
-    void ClearBitmapStream();
 }
 
 public class ImageService : IImageService
@@ -20,16 +19,25 @@ public class ImageService : IImageService
 
     public BitmapImage CreatePreviewImage(string path)
     {
-        ClearBitmapStream();
-
         var bitmap = new BitmapImage();
         _bitmapStreamSource = File.OpenRead(path);
         bitmap.BeginInit();
-        bitmap.CacheOption = BitmapCacheOption.None;
+        bitmap.CacheOption = BitmapCacheOption.OnLoad;
         bitmap.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
         bitmap.StreamSource = _bitmapStreamSource;
         bitmap.EndInit();
+        bitmap.Freeze();
+
+        ClearBitmapStream();
+
         return bitmap;
+    }
+
+    public string GetImagePath(string filePath, string tempFolder)
+    {
+        return IsLandscape(filePath)
+            ? filePath
+            : ConvertPortraitImageToLandscape(filePath, tempFolder);
     }
 
     public void ClearBitmapStream()
@@ -39,13 +47,6 @@ public class ImageService : IImageService
         _bitmapStreamSource.Dispose();
         _bitmapStreamSource = null;
         GC.Collect();
-    }
-
-    public string GetImagePath(string filePath, string tempFolder)
-    {
-        return IsLandscape(filePath)
-            ? filePath
-            : ConvertPortraitImageToLandscape(filePath, tempFolder);
     }
 
     public string ConvertPortraitImageToLandscape(string filePath, string tempFolder)
