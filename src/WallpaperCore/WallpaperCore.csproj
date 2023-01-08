@@ -5,14 +5,15 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+	<ApplicationIcon>Resources/appIcon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\renekton.ico" />
+    <None Remove="Resources\appIcon.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Resources\renekton.ico">
+    <Content Include="Resources\appIcon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -11,7 +11,7 @@
                  Title="Wallpaper" Height="600" Width="530"
                  ResizeMode="NoResize"
                  WindowStartupLocation="CenterScreen"
-                 Icon="/Resources/renekton.ico"
+                 Icon="/Resources/appIcon.ico"
                  ShowIconOnTitleBar="False"
                  DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}">
     <Window.Resources>
