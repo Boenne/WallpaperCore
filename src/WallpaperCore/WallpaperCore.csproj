@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\appIcon.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="Resources\appIcon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
