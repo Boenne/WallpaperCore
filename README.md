@@ -8,8 +8,8 @@ You use the program by inserting the system path of the folder you wish to load 
 Remember to check the 'Include subfolders' box if you want to include subfolders. Then click 'Start'.
 
 <p float="left">
-  <img src="https://github.com/Boenne/WallpaperCore/blob/main/readme_images/program.png" width="450" />
-  <img src="https://github.com/Boenne/WallpaperCore/blob/main/readme_images/program_running.png" width="450" /> 
+  <img src="https://github.com/Boenne/WallpaperCore/blob/main/readme_images/program.png" width="49%" />
+  <img src="https://github.com/Boenne/WallpaperCore/blob/main/readme_images/program_running.png" width="49%" /> 
 </p>
 
 The 'Restart' button is used when the program is running and you add new images to the folder, 
@@ -23,8 +23,8 @@ You can add bookmarks by navigating to the 'Bookmarks' tab.
 To load images from a bookmarked path simply click the '>>' button next to the bookmark in the list.
 
 <p float="left">
-  <img src="https://github.com/Boenne/WallpaperCore/blob/main/readme_images/program_bookmarks_add.png" width="450" />
-  <img src="https://github.com/Boenne/WallpaperCore/blob/main/readme_images/program_bookmarks_actions.png" width="450" /> 
+  <img src="https://github.com/Boenne/WallpaperCore/blob/main/readme_images/program_bookmarks_add.png" width="49%" />
+  <img src="https://github.com/Boenne/WallpaperCore/blob/main/readme_images/program_bookmarks_actions.png" width="49%" /> 
 </p>
 
 <h3>Settings</h3>
@@ -33,8 +33,8 @@ Under settings you have the option of specifying the system path of a folder, th
 With a root folder specified, you only have to insert the name of a given subfolder within that specified root folder, and not the whole system path.
 
 <p float="left">
-  <img src="https://github.com/Boenne/WallpaperCore/blob/main/readme_images/program_settings_rootfolder.png" width="450" />
-  <img src="https://github.com/Boenne/WallpaperCore/blob/main/readme_images/program_running_rootfolder.png" width="450" /> 
+  <img src="https://github.com/Boenne/WallpaperCore/blob/main/readme_images/program_settings_rootfolder.png" width="49%" />
+  <img src="https://github.com/Boenne/WallpaperCore/blob/main/readme_images/program_running_rootfolder.png" width="49%" /> 
 </p>
 
 <h3>Portrait images</h3>
