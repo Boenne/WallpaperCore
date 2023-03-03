@@ -9,7 +9,7 @@
                  xmlns:userControls="clr-namespace:WallpaperCore.UserControls"
                  mc:Ignorable="d"
                  Title="Wallpaper" Height="600" Width="530"
-                 ResizeMode="NoResize"
+                 ResizeMode="CanMinimize"
                  WindowStartupLocation="CenterScreen"
                  Icon="/Resources/appIcon.ico"
                  ShowIconOnTitleBar="False"
@@ -65,7 +65,7 @@
         </Grid.ColumnDefinitions>
         <TabControl Grid.Column="1" Margin="0,50,0,50">
             <TabItem Header="Main">
-                <Grid>
+                <Grid FocusManager.FocusedElement="{Binding ElementName=TextBoxDirectory}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="45" />
                         <RowDefinition Height="45" />
@@ -122,7 +122,7 @@
                                 Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}}">
                         <Image Name="ImagePreview"
                                Height="190"
-                               Stretch="Fill"
+                               Stretch="UniformToFill"
                                Source="{Binding PreviewImage, FallbackValue={StaticResource DefaultImage}}" />
                         <ProgressBar Value="{Binding Progress}"/>
                     </StackPanel>
