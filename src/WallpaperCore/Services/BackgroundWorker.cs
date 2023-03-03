@@ -65,6 +65,7 @@ public class BackgroundWorker : IBackgroundWorker, IDisposable
         {
             if (!_mainDirectory!.Exists) return;
             _images = _mainDirectory.GetImageFiles();
+
             if (includeSubfolders)
                 GetFilesInSubFolders(_mainDirectory, _images);
 
@@ -129,10 +130,11 @@ public class BackgroundWorker : IBackgroundWorker, IDisposable
     {
         if (_mainCts == null || _timerCts == null) return;
 
-        _mainCts.Cancel();
         _timerCts.Cancel();
+        _mainCts.Cancel();
 
         _backgroundTask?.Wait();
+        _index = 0;
     }
 
     public async Task WaitSeconds(int seconds, Action<double> incrementProgressAction)
