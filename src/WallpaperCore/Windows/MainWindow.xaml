@@ -8,7 +8,7 @@
                  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  xmlns:userControls="clr-namespace:WallpaperCore.UserControls"
                  mc:Ignorable="d"
-                 Title="Wallpaper" Height="600" Width="530"
+                 Title="Wallpaper" Height="575" Width="530"
                  ResizeMode="CanMinimize"
                  WindowStartupLocation="CenterScreen"
                  Icon="/Resources/appIcon.ico"
@@ -71,85 +71,150 @@
                         <RowDefinition Height="45" />
                         <RowDefinition Height="45" />
                         <RowDefinition Height="240" />
-                        <RowDefinition Height="25" />
                     </Grid.RowDefinitions>
                     <TextBox Grid.Row="0" Name="TextBoxDirectory" Padding="7" Margin="5"
                              Text="{Binding RunningDirectoryPath}"
                              Style="{StaticResource MahApps.Styles.TextBox}" mah:TextBoxHelper.Watermark="Image folder" />
-                    <Button Grid.Row="2" Margin="5" Content="_Start"
-                            Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}, ConverterParameter=switch, FallbackValue=Visible}">
+                    <CheckBox Grid.Row="1" Margin="6" Content="Include subfolders"
+                              IsChecked="{Binding IncludeSubfolders}"
+                              Style="{DynamicResource MahApps.Styles.CheckBox.Win10}" />
+                    <Button Grid.Row="2" Margin="5">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                <Setter Property="Content" Value="_Start" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                                        <Setter Property="Content" Value="_Restart" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="Click">
                                 <b:InvokeCommandAction Command="{Binding StartCommand}" />
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
                     </Button>
-                    <CheckBox Grid.Row="1" Margin="6" Content="Include subfolders"
-                              IsChecked="{Binding IncludeSubfolders}"
-                              Style="{DynamicResource MahApps.Styles.CheckBox.Win10}" />
-                    <Grid Grid.Row="2"
-                          Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Margin="5">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                    <Setter Property="Content" Value="_Pause" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsPaused}" Value="True">
-                                            <Setter Property="Content" Value="Resume" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                            <b:Interaction.Triggers>
-                                <b:EventTrigger EventName="Click">
-                                    <b:InvokeCommandAction Command="{Binding PauseCommand}" />
-                                </b:EventTrigger>
-                            </b:Interaction.Triggers>
-                        </Button>
-                        <Button Grid.Column="1" Margin="5" Content="_Restart">
-                            <b:Interaction.Triggers>
-                                <b:EventTrigger EventName="Click">
-                                    <b:InvokeCommandAction Command="{Binding RestartCommand}" />
-                                </b:EventTrigger>
-                            </b:Interaction.Triggers>
-                        </Button>
-                    </Grid>
                     <StackPanel Grid.Row="3" Margin="5, 20, 5 ,0"
                                 Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}}">
-                        <Image Name="ImagePreview"
-                               Height="190"
-                               Stretch="UniformToFill"
-                               Source="{Binding PreviewImage, FallbackValue={StaticResource DefaultImage}}" />
-                        <ProgressBar Value="{Binding Progress}"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center"
-                                Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}}">
-                        <Button Style="{DynamicResource MahApps.Styles.Button.Circle}" ToolTip="Previous">
-                            <iconPacks:ForkAwesome Width="25"
-                                                   Height="15"
-                                                   Kind="AngleDoubleLeft" />
-                            <b:Interaction.Triggers>
-                                <b:EventTrigger EventName="Click">
-                                    <b:InvokeCommandAction
-                                        Command="{Binding PreviousCommand}" />
-                                </b:EventTrigger>
-                            </b:Interaction.Triggers>
-                        </Button>
-                        <Button Style="{DynamicResource MahApps.Styles.Button.Circle}" ToolTip="Next">
-                            <iconPacks:ForkAwesome Width="25"
-                                                   Height="15"
-                                                   Kind="AngleDoubleRight" />
-                            <b:Interaction.Triggers>
-                                <b:EventTrigger EventName="Click">
-                                    <b:InvokeCommandAction
-                                        Command="{Binding NextCommand}" />
-                                </b:EventTrigger>
-                            </b:Interaction.Triggers>
-                        </Button>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="5*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" Grid.ColumnSpan="3" Name="ImagePreview"
+                                   Height="190"
+                                   Stretch="UniformToFill"
+                                   Source="{Binding PreviewImage, FallbackValue={StaticResource DefaultImage}}" />
+
+                            <Button Grid.Column="0" BorderThickness="0" Background="Transparent">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                                        <ContentPresenter HorizontalAlignment="Center"
+                                                                          VerticalAlignment="Center" />
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="LightGray"
+                                                                    TargetName="Border" />
+                                                            <Setter Property="Opacity" Value="0.5" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                                <iconPacks:ForkAwesome Width="25"
+                                                       Height="15"
+                                                       Kind="AngleDoubleLeft" />
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="Click">
+                                        <b:InvokeCommandAction
+                                            Command="{Binding PreviousCommand}" />
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </Button>
+                            <Button Grid.Column="1" BorderThickness="0" Background="Transparent">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                                        <ContentPresenter HorizontalAlignment="Center"
+                                                                          VerticalAlignment="Center" />
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="LightGray"
+                                                                    TargetName="Border" />
+                                                            <Setter Property="Opacity" Value="0.5" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                                <StackPanel>
+                                    <StackPanel Visibility="{Binding IsPaused, Converter={StaticResource BoolToVisibility}, ConverterParameter=switch, FallbackValue=Visible}">
+                                        <iconPacks:ForkAwesome Width="25"
+                                                               Height="15"
+                                                               Kind="Pause" />
+                                    </StackPanel>
+                                    <StackPanel Visibility="{Binding IsPaused, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
+                                        <iconPacks:ForkAwesome Width="25"
+                                                               Height="15"
+                                                               Kind="Play" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="Click">
+                                        <b:InvokeCommandAction
+                                            Command="{Binding PauseCommand}" />
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </Button>
+                            <Button Grid.Column="2" BorderThickness="0" Background="Transparent">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                                        <ContentPresenter HorizontalAlignment="Center"
+                                                                          VerticalAlignment="Center" />
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="LightGray"
+                                                                    TargetName="Border" />
+                                                            <Setter Property="Opacity" Value="0.5" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                                <iconPacks:ForkAwesome Width="25"
+                                                       Height="15"
+                                                       Kind="AngleDoubleRight" />
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="Click">
+                                        <b:InvokeCommandAction
+                                            Command="{Binding NextCommand}" />
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </Button>
+                        </Grid>
+                        <ProgressBar Value="{Binding Progress}" />
                     </StackPanel>
                 </Grid>
             </TabItem>
